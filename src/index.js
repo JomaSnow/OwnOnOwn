@@ -1,17 +1,38 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "./index.css";
+import Home from "./pages/Home";
+import Sobre from "./pages/Sobre";
+import { SolidProvider } from "./hooks/SolidProvider";
+import { PodMealsProvider } from "./hooks/PodMealsProvider";
+import { PodFriendsProvider } from "./hooks/PodFriendsProvider";
+import PerfilPage from "./pages/Perfil";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "/sobre",
+    element: <Sobre />,
+  },
+  {
+    path: "/perfil",
+    element: <PerfilPage />,
+  },
+]);
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <SolidProvider>
+      <PodMealsProvider>
+        <PodFriendsProvider>
+          <RouterProvider router={router} />
+        </PodFriendsProvider>
+      </PodMealsProvider>
+    </SolidProvider>
   </React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
