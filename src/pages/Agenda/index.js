@@ -1,5 +1,5 @@
 import Display from "./Display";
 
-export default function SobrePage() {
+export default function AgendaPage() {
   return <Display />;
 }

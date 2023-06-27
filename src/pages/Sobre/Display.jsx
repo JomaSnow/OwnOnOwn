@@ -9,7 +9,7 @@ export default function Display() {
       <Navbar currentPage={1} />
       <Main>
         <PageTitle>Sobre</PageTitle>
-        <Paragraph>
+        {/* <Paragraph>
           Ruview é parte de um trabalho de conclusão de curso para o curso de
           Ciência da Computação pela Universidade de Brasília (UnB). O objetivo
           maior do trabalho em questão é aprimorar conhecimento em cima da
@@ -54,7 +54,7 @@ export default function Display() {
           ter acesso a um POD, seja um próprio ou algum outro hospedado
           gratuitamente em provedores como https://inrupt.net ou
           https://solidcommunity.net.
-        </Paragraph>
+        </Paragraph> */}
       </Main>
       <Footer />
     </>

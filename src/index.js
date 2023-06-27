@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Home from "./pages/Home";
 import Sobre from "./pages/Sobre";
+import Agenda from "./pages/Agenda";
 import { SolidProvider } from "./hooks/SolidProvider";
 import { PodMealsProvider } from "./hooks/PodMealsProvider";
 import { PodFriendsProvider } from "./hooks/PodFriendsProvider";
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/sobre",
     element: <Sobre />,
+  },
+  {
+    path: "/agenda",
+    element: <Agenda />,
   },
   {
     path: "/perfil",

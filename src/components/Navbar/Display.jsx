@@ -43,9 +43,9 @@ export default function Display({
           <HeaderLink to={"/sobre"} $selected={currentPage == 1}>
             Sobre
           </HeaderLink>
-          {/* <HeaderLink to={"/cardapio"} $selected={currentPage == 2}>
-            Cardápio
-          </HeaderLink> */}
+          <HeaderLink to={"/agenda"} $selected={currentPage == 2}>
+            Agenda
+          </HeaderLink>
           {!webId ? (
             <HeaderLink onClick={handleModalToggle}>Login</HeaderLink>
           ) : (

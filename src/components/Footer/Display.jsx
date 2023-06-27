@@ -23,6 +23,9 @@ export default function Display() {
             <li style={{ color: colors.white }}>
               <StyledLink to={"/sobre"}>Sobre</StyledLink>
             </li>
+            <li style={{ color: colors.white }}>
+              <StyledLink to={"/agenda"}>Agenda</StyledLink>
+            </li>
           </ul>
         </Column>
         <Column>
