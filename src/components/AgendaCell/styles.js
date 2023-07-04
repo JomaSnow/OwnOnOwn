@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const Cell = styled.button`
   display: flex;
-  width: 85%;
+  width: 80%;
   height: 95%;
   background-color: ${(props) =>
     props.$status === 3

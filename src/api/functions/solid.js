@@ -14,7 +14,8 @@ import {
 import { fetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
 import { FOAF, VCARD } from "@inrupt/vocab-common-rdf";
 
-export async function getLikedMeals(webId) {
+// PAra agenda do usuário não passa webId, para de algum amigo passa.
+export async function getAgenda(webId) {
   let id = webId;
 
   if (!webId) {
@@ -25,172 +26,172 @@ export async function getLikedMeals(webId) {
 
   const podUrl = myPods[0];
 
-  const targetFileURL = podUrl + "public/ruview/likedMeals.json";
+  const targetFileURL = podUrl + "public/tutor/agenda.json";
+
+  const dateNow = Date.now();
 
   try {
-    const likedMeals = await getFile(targetFileURL, { fetch: fetch });
+    const agenda = await getFile(targetFileURL, { fetch: fetch });
 
-    const blob = await new Response(likedMeals).text();
+    const blob = await new Response(agenda).text();
 
     const json = JSON.parse(blob);
 
     return json;
   } catch (e) {
     if (e.message.includes("404")) {
-      return [];
-    }
-    console.error("Ocorreu um erro no getLikedMeals.");
-    console.error(e);
-    throw new Error(e);
-  }
-}
+      if (!webId) {
+        const file = {
+          updated_at: dateNow,
+          segunda_06: 0,
+          segunda_08: 0,
+          segunda_10: 0,
+          segunda_12: 0,
+          segunda_14: 0,
+          segunda_16: 0,
+          segunda_18: 0,
+          segunda_20: 0,
+          segunda_22: 0,
+          terca_06: 0,
+          terca_08: 0,
+          terca_10: 0,
+          terca_12: 0,
+          terca_14: 0,
+          terca_16: 0,
+          terca_18: 0,
+          terca_20: 0,
+          terca_22: 0,
+          quarta_06: 0,
+          quarta_08: 0,
+          quarta_10: 0,
+          quarta_12: 0,
+          quarta_14: 0,
+          quarta_16: 0,
+          quarta_18: 0,
+          quarta_20: 0,
+          quarta_22: 0,
+          quinta_06: 0,
+          quinta_08: 0,
+          quinta_10: 0,
+          quinta_12: 0,
+          quinta_14: 0,
+          quinta_16: 0,
+          quinta_18: 0,
+          quinta_20: 0,
+          quinta_22: 0,
+          sexta_06: 0,
+          sexta_08: 0,
+          sexta_10: 0,
+          sexta_12: 0,
+          sexta_14: 0,
+          sexta_16: 0,
+          sexta_18: 0,
+          sexta_20: 0,
+          sexta_22: 0,
+          sabado_06: 0,
+          sabado_08: 0,
+          sabado_10: 0,
+          sabado_12: 0,
+          sabado_14: 0,
+          sabado_16: 0,
+          sabado_18: 0,
+          sabado_20: 0,
+          sabado_22: 0,
+          domingo_06: 0,
+          domingo_08: 0,
+          domingo_10: 0,
+          domingo_12: 0,
+          domingo_14: 0,
+          domingo_16: 0,
+          domingo_18: 0,
+          domingo_20: 0,
+          domingo_22: 0,
+        };
 
-export async function addLikedMeal(meal) {
-  const webId = getDefaultSession().info.webId;
-  const myPods = await getPodUrlAll(webId);
-  const podUrl = myPods[0];
-
-  const targetFileURL = podUrl + "public/ruview/likedMeals.json";
-
-  const fileArr = await getLikedMeals();
-
-  fileArr.push({
-    id: meal.id,
-    tipo_refeicao: meal.tipo_refeicao,
-    nome: meal.nome,
-  });
-
-  try {
-    await overwriteFile(
-      targetFileURL, // URL for the file.
-      JSON.stringify(fileArr), // File
-      { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
-    );
-  } catch (error) {
-    if (error.message.includes("Cannot assign to read only")) {
-      console.warn(error);
+        try {
+          await overwriteFile(
+            targetFileURL, // URL for the file.
+            JSON.stringify(file), // File
+            { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
+          );
+          return file;
+        } catch (error) {
+          if (error.message.includes("Cannot assign to read only")) {
+            console.warn(error);
+          } else {
+            console.error(error);
+          }
+        }
+      } else {
+        console.error("Este amigo ainda não utiliza Tutor.");
+        console.error(e);
+        return null;
+      }
     } else {
-      console.error(error);
-    }
-  }
-}
-
-export async function getDislikedMeals(webId) {
-  let id = webId;
-
-  if (!webId) {
-    id = getDefaultSession().info.webId;
-  }
-
-  const myPods = await getPodUrlAll(id);
-
-  const podUrl = myPods[0];
-
-  const targetFileURL = podUrl + "public/ruview/dislikedMeals.json";
-
-  try {
-    const likedMeals = await getFile(targetFileURL, { fetch: fetch });
-
-    const blob = await new Response(likedMeals).text();
-
-    const json = JSON.parse(blob);
-
-    return json;
-  } catch (e) {
-    if (e.message.includes("404")) {
-      return [];
-    }
-    console.error("Ocorreu um erro no getDislikedMeals.");
-    console.error(e);
-    throw new Error(e);
-  }
-}
-
-export async function addDislikedMeal(meal) {
-  const webId = getDefaultSession().info.webId;
-  const myPods = await getPodUrlAll(webId);
-  const podUrl = myPods[0];
-
-  const targetFileURL = podUrl + "public/ruview/dislikedMeals.json";
-
-  const fileArr = await getDislikedMeals();
-
-  fileArr.push({
-    id: meal.id,
-    tipo_refeicao: meal.tipo_refeicao,
-    nome: meal.nome,
-  });
-
-  try {
-    await overwriteFile(
-      targetFileURL, // URL for the file.
-      JSON.stringify(fileArr), // File
-      { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
-    );
-  } catch (error) {
-    if (error.message.includes("Cannot assign to read only")) {
-      console.warn(error);
-    } else {
-      console.error(error);
-    }
-  }
-}
-
-export async function undoLike(meal) {
-  const webId = getDefaultSession().info.webId;
-  const myPods = await getPodUrlAll(webId);
-  const podUrl = myPods[0];
-
-  const targetFileURL = podUrl + "public/ruview/likedMeals.json";
-
-  try {
-    const likedMeals = await getLikedMeals();
-
-    const fileArr = likedMeals.filter((m) => {
-      return m.id != meal.id;
-    });
-
-    await overwriteFile(
-      targetFileURL, // URL for the file.
-      JSON.stringify(fileArr), // File
-      { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
-    );
-  } catch (e) {
-    if (e.message.includes("Cannot assign to read only")) {
-      console.warn(e);
-    } else {
+      console.error("Ocorreu um erro no getAgenda.");
       console.error(e);
+      throw new Error(e);
     }
   }
 }
 
-export async function undoDislike(meal) {
-  const webId = getDefaultSession().info.webId;
-  const myPods = await getPodUrlAll(webId);
-  const podUrl = myPods[0];
+// export async function addLikedMeal(meal) {
+//   const webId = getDefaultSession().info.webId;
+//   const myPods = await getPodUrlAll(webId);
+//   const podUrl = myPods[0];
 
-  const targetFileURL = podUrl + "public/ruview/dislikedMeals.json";
+//   const targetFileURL = podUrl + "public/tutor/agenda.json";
 
-  try {
-    const dislikedMeals = await getDislikedMeals();
+//   const fileArr = await getLikedMeals();
 
-    const fileArr = dislikedMeals.filter((m) => {
-      return m.id != meal.id;
-    });
+//   fileArr.push({
+//     id: meal.id,
+//     tipo_refeicao: meal.tipo_refeicao,
+//     nome: meal.nome,
+//   });
 
-    await overwriteFile(
-      targetFileURL, // URL for the file.
-      JSON.stringify(fileArr), // File
-      { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
-    );
-  } catch (e) {
-    if (e.message.includes("Cannot assign to read only")) {
-      console.warn(e);
-    } else {
-      console.error(e);
-    }
-  }
-}
+//   try {
+//     await overwriteFile(
+//       targetFileURL, // URL for the file.
+//       JSON.stringify(fileArr), // File
+//       { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
+//     );
+//   } catch (error) {
+//     if (error.message.includes("Cannot assign to read only")) {
+//       console.warn(error);
+//     } else {
+//       console.error(error);
+//     }
+//   }
+// }
+
+// export async function undoLike(meal) {
+//   const webId = getDefaultSession().info.webId;
+//   const myPods = await getPodUrlAll(webId);
+//   const podUrl = myPods[0];
+
+//   const targetFileURL = podUrl + "public/ruview/likedMeals.json";
+
+//   try {
+//     const likedMeals = await getLikedMeals();
+
+//     const fileArr = likedMeals.filter((m) => {
+//       return m.id != meal.id;
+//     });
+
+//     await overwriteFile(
+//       targetFileURL, // URL for the file.
+//       JSON.stringify(fileArr), // File
+//       { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
+//     );
+//   } catch (e) {
+//     if (e.message.includes("Cannot assign to read only")) {
+//       console.warn(e);
+//     } else {
+//       console.error(e);
+//     }
+//   }
+// }
 
 export async function getSolidFriends() {
   const webId = getDefaultSession().info.webId;
@@ -210,10 +211,9 @@ export async function getSolidFriends() {
 
       const nome = getLiteral(friendThing, FOAF.name).value;
       const friendWebId = url;
-      const likedMeals = await getLikedMeals(url);
-      const dislikedMeals = await getDislikedMeals(url);
+      const agenda = await getAgenda(url);
 
-      const friendObj = { nome, friendWebId, likedMeals, dislikedMeals };
+      const friendObj = { nome, friendWebId, agenda };
 
       friendsObjArr.push(friendObj);
     }

@@ -5,7 +5,7 @@ export const AgendaArea = styled.div`
   display: flex;
   position: relative;
   margin: 1rem 3rem;
-  height: 50rem;
+  height: 45rem;
   flex-direction: column;
 `;
 
@@ -22,6 +22,21 @@ export const CellRow = styled.div`
   width: 100%;
   flex: 1;
   margin-bottom: 4px;
+`;
+
+export const ActionRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  margin-bottom: 4px;
+`;
+
+export const InfoSpan = styled.span`
+  color: ${colors.black};
+  font-weight: 700;
 `;
 
 export const Column = styled.div`

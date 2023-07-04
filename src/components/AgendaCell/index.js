@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Display from "./Display";
 import { getModalTitleFromCellDayTime } from "../../util/modalTitle";
+import { usePodAgendaUpdate } from "../../hooks/PodAgendaProvider";
 
 export default function AgendaCell({ availability = 0, cell_day_time }) {
   const [status, setStatus] = useState(availability);
@@ -8,6 +9,8 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
   const [title, setTitle] = useState("");
   const [paragraph, setParagraph] = useState("");
   const [actionText, setActionText] = useState("");
+
+  const { setAgenda } = usePodAgendaUpdate();
 
   useEffect(() => {
     setStatus(availability);
@@ -58,11 +61,19 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
   async function actionModal() {
     switch (availability) {
       case 0:
-        console.log("Tornar LIVRE");
+        setAgenda((agendaVelha) => {
+          let agendaNova = { ...agendaVelha };
+          agendaNova[cell_day_time] = 1;
+          return agendaNova;
+        });
         break;
 
       case 1:
-        console.log("Tornar INDISPONÍVEL");
+        setAgenda((agendaVelha) => {
+          let agendaNova = { ...agendaVelha };
+          agendaNova[cell_day_time] = 0;
+          return agendaNova;
+        });
         break;
 
       case 3:
@@ -73,6 +84,7 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
         console.log("Ação");
         break;
     }
+    closeModal();
   }
 
   return (

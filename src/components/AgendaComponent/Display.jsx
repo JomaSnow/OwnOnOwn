@@ -1,9 +1,25 @@
 import React from "react";
-import { AgendaArea, CellRow, Column, HeaderRow, HeaderSpan } from "./styles";
+import {
+  ActionRow,
+  AgendaArea,
+  CellRow,
+  Column,
+  HeaderRow,
+  HeaderSpan,
+  InfoSpan,
+} from "./styles";
 import Cell from "../AgendaCell";
+import { usePodAgenda } from "../../hooks/PodAgendaProvider";
+import MainButton from "../MainButton";
 
-export default function Display() {
-  return (
+export default function Display({ handleUpdate = () => {}, updateDisabled }) {
+  const { agenda } = usePodAgenda();
+
+  return !agenda ? (
+    <h2>
+      Agenda não carregou corretamente. Atualize a págine e tente novamente.
+    </h2>
+  ) : (
     <AgendaArea>
       <HeaderRow>
         <Column></Column>
@@ -34,25 +50,46 @@ export default function Display() {
           <HeaderSpan>06h-08h</HeaderSpan>
         </Column>
         <Column>
-          <Cell availability={1} cell_day_time={"segunda_06"}></Cell>
+          <Cell
+            availability={agenda.segunda_06}
+            cell_day_time={"segunda_06"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell availability={2} cell_day_time={"terca_06"}></Cell>
+          <Cell
+            availability={agenda.terca_06}
+            cell_day_time={"terca_06"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell availability={3} cell_day_time={"quarta_06"}></Cell>
+          <Cell
+            availability={agenda.quarta_06}
+            cell_day_time={"quarta_06"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quinta_06"}></Cell>
+          <Cell
+            availability={agenda.quinta_06}
+            cell_day_time={"quinta_06"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sexta_06"}></Cell>
+          <Cell
+            availability={agenda.sexta_06}
+            cell_day_time={"sexta_06"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sabado_06"}></Cell>
+          <Cell
+            availability={agenda.sabado_06}
+            cell_day_time={"sabado_06"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"domingo_06"}></Cell>
+          <Cell
+            availability={agenda.domingo_06}
+            cell_day_time={"domingo_06"}
+          ></Cell>
         </Column>
       </CellRow>
       <CellRow>
@@ -60,25 +97,46 @@ export default function Display() {
           <HeaderSpan>08h-10h</HeaderSpan>
         </Column>
         <Column>
-          <Cell cell_day_time={"segunda_08"}></Cell>
+          <Cell
+            availability={agenda.segunda_08}
+            cell_day_time={"segunda_08"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"terca_08"}></Cell>
+          <Cell
+            availability={agenda.terca_08}
+            cell_day_time={"terca_08"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quarta_08"}></Cell>
+          <Cell
+            availability={agenda.quarta_08}
+            cell_day_time={"quarta_08"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quinta_08"}></Cell>
+          <Cell
+            availability={agenda.quinta_08}
+            cell_day_time={"quinta_08"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sexta_08"}></Cell>
+          <Cell
+            availability={agenda.sexta_08}
+            cell_day_time={"sexta_08"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sabado_08"}></Cell>
+          <Cell
+            availability={agenda.sabado_08}
+            cell_day_time={"sabado_08"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"domingo_08"}></Cell>
+          <Cell
+            availability={agenda.domingo_08}
+            cell_day_time={"domingo_08"}
+          ></Cell>
         </Column>
       </CellRow>
       <CellRow>
@@ -86,25 +144,46 @@ export default function Display() {
           <HeaderSpan>10h-12h</HeaderSpan>
         </Column>
         <Column>
-          <Cell cell_day_time={"segunda_10"}></Cell>
+          <Cell
+            availability={agenda.segunda_10}
+            cell_day_time={"segunda_10"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"terca_10"}></Cell>
+          <Cell
+            availability={agenda.terca_10}
+            cell_day_time={"terca_10"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quarta_10"}></Cell>
+          <Cell
+            availability={agenda.quarta_10}
+            cell_day_time={"quarta_10"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quinta_10"}></Cell>
+          <Cell
+            availability={agenda.quinta_10}
+            cell_day_time={"quinta_10"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sexta_10"}></Cell>
+          <Cell
+            availability={agenda.sexta_10}
+            cell_day_time={"sexta_10"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sabado_10"}></Cell>
+          <Cell
+            availability={agenda.sabado_10}
+            cell_day_time={"sabado_10"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"domingo_10"}></Cell>
+          <Cell
+            availability={agenda.domingo_10}
+            cell_day_time={"domingo_10"}
+          ></Cell>
         </Column>
       </CellRow>
       <CellRow>
@@ -112,25 +191,46 @@ export default function Display() {
           <HeaderSpan>12h-14h</HeaderSpan>
         </Column>
         <Column>
-          <Cell cell_day_time={"segunda_12"}></Cell>
+          <Cell
+            availability={agenda.segunda_12}
+            cell_day_time={"segunda_12"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"terca_12"}></Cell>
+          <Cell
+            availability={agenda.terca_12}
+            cell_day_time={"terca_12"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quarta_12"}></Cell>
+          <Cell
+            availability={agenda.quarta_12}
+            cell_day_time={"quarta_12"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quinta_12"}></Cell>
+          <Cell
+            availability={agenda.quinta_12}
+            cell_day_time={"quinta_12"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sexta_12"}></Cell>
+          <Cell
+            availability={agenda.sexta_12}
+            cell_day_time={"sexta_12"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sabado_12"}></Cell>
+          <Cell
+            availability={agenda.sabado_12}
+            cell_day_time={"sabado_12"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"domingo_12"}></Cell>
+          <Cell
+            availability={agenda.domingo_12}
+            cell_day_time={"domingo_12"}
+          ></Cell>
         </Column>
       </CellRow>
       <CellRow>
@@ -138,25 +238,46 @@ export default function Display() {
           <HeaderSpan>14h-16h</HeaderSpan>
         </Column>
         <Column>
-          <Cell cell_day_time={"segunda_14"}></Cell>
+          <Cell
+            availability={agenda.segunda_14}
+            cell_day_time={"segunda_14"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"terca_14"}></Cell>
+          <Cell
+            availability={agenda.terca_14}
+            cell_day_time={"terca_14"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quarta_14"}></Cell>
+          <Cell
+            availability={agenda.quarta_14}
+            cell_day_time={"quarta_14"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quinta_14"}></Cell>
+          <Cell
+            availability={agenda.quinta_14}
+            cell_day_time={"quinta_14"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sexta_14"}></Cell>
+          <Cell
+            availability={agenda.sexta_14}
+            cell_day_time={"sexta_14"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sabado_14"}></Cell>
+          <Cell
+            availability={agenda.sabado_14}
+            cell_day_time={"sabado_14"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"domingo_14"}></Cell>
+          <Cell
+            availability={agenda.domingo_14}
+            cell_day_time={"domingo_14"}
+          ></Cell>
         </Column>
       </CellRow>
       <CellRow>
@@ -164,25 +285,46 @@ export default function Display() {
           <HeaderSpan>16h-18h</HeaderSpan>
         </Column>
         <Column>
-          <Cell cell_day_time={"segunda_16"}></Cell>
+          <Cell
+            availability={agenda.segunda_16}
+            cell_day_time={"segunda_16"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"terca_16"}></Cell>
+          <Cell
+            availability={agenda.terca_16}
+            cell_day_time={"terca_16"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quarta_16"}></Cell>
+          <Cell
+            availability={agenda.quarta_16}
+            cell_day_time={"quarta_16"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quinta_16"}></Cell>
+          <Cell
+            availability={agenda.quinta_16}
+            cell_day_time={"quinta_16"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sexta_16"}></Cell>
+          <Cell
+            availability={agenda.sexta_16}
+            cell_day_time={"sexta_16"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sabado_16"}></Cell>
+          <Cell
+            availability={agenda.sabado_16}
+            cell_day_time={"sabado_16"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"domingo_16"}></Cell>
+          <Cell
+            availability={agenda.domingo_16}
+            cell_day_time={"domingo_16"}
+          ></Cell>
         </Column>
       </CellRow>
       <CellRow>
@@ -190,25 +332,46 @@ export default function Display() {
           <HeaderSpan>18h-20h</HeaderSpan>
         </Column>
         <Column>
-          <Cell cell_day_time={"segunda_18"}></Cell>
+          <Cell
+            availability={agenda.segunda_18}
+            cell_day_time={"segunda_18"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"terca_18"}></Cell>
+          <Cell
+            availability={agenda.terca_18}
+            cell_day_time={"terca_18"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quarta_18"}></Cell>
+          <Cell
+            availability={agenda.quarta_18}
+            cell_day_time={"quarta_18"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quinta_18"}></Cell>
+          <Cell
+            availability={agenda.quinta_18}
+            cell_day_time={"quinta_18"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sexta_18"}></Cell>
+          <Cell
+            availability={agenda.sexta_18}
+            cell_day_time={"sexta_18"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sabado_18"}></Cell>
+          <Cell
+            availability={agenda.sabado_18}
+            cell_day_time={"sabado_18"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"domingo_18"}></Cell>
+          <Cell
+            availability={agenda.domingo_18}
+            cell_day_time={"domingo_18"}
+          ></Cell>
         </Column>
       </CellRow>
       <CellRow>
@@ -216,27 +379,58 @@ export default function Display() {
           <HeaderSpan>20h-22h</HeaderSpan>
         </Column>
         <Column>
-          <Cell cell_day_time={"segunda_20"}></Cell>
+          <Cell
+            availability={agenda.segunda_20}
+            cell_day_time={"segunda_20"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"terca_20"}></Cell>
+          <Cell
+            availability={agenda.terca_20}
+            cell_day_time={"terca_20"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quarta_20"}></Cell>
+          <Cell
+            availability={agenda.quarta_20}
+            cell_day_time={"quarta_20"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"quinta_20"}></Cell>
+          <Cell
+            availability={agenda.quinta_20}
+            cell_day_time={"quinta_20"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sexta_20"}></Cell>
+          <Cell
+            availability={agenda.sexta_20}
+            cell_day_time={"sexta_20"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"sabado_20"}></Cell>
+          <Cell
+            availability={agenda.sabado_20}
+            cell_day_time={"sabado_20"}
+          ></Cell>
         </Column>
         <Column>
-          <Cell cell_day_time={"domingo_20"}></Cell>
+          <Cell
+            availability={agenda.domingo_20}
+            cell_day_time={"domingo_20"}
+          ></Cell>
         </Column>
       </CellRow>
+      <ActionRow>
+        <InfoSpan>
+          atualizado em {new Date(agenda.updated_at).toLocaleString()}
+        </InfoSpan>
+        <MainButton
+          text="Atualizar agenda"
+          onClick={handleUpdate}
+          disabled={updateDisabled}
+        />
+      </ActionRow>
     </AgendaArea>
   );
 }

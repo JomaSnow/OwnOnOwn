@@ -6,7 +6,7 @@ import Home from "./pages/Home";
 import Sobre from "./pages/Sobre";
 import Agenda from "./pages/Agenda";
 import { SolidProvider } from "./hooks/SolidProvider";
-import { PodMealsProvider } from "./hooks/PodMealsProvider";
+import { PodAgendaProvider } from "./hooks/PodAgendaProvider";
 import { PodFriendsProvider } from "./hooks/PodFriendsProvider";
 import PerfilPage from "./pages/Perfil";
 
@@ -33,11 +33,11 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <SolidProvider>
-      <PodMealsProvider>
+      <PodAgendaProvider>
         <PodFriendsProvider>
           <RouterProvider router={router} />
         </PodFriendsProvider>
-      </PodMealsProvider>
+      </PodAgendaProvider>
     </SolidProvider>
   </React.StrictMode>
 );
