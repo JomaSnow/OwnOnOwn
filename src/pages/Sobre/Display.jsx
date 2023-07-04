@@ -1,5 +1,9 @@
 import React from "react";
-import { Main, PageTitle, Paragraph } from "./styles";
+import {
+  Main,
+  PageTitle,
+  //  Paragraph
+} from "./styles";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 
