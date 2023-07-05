@@ -19,10 +19,14 @@ export function usePodFriendsUpdate() {
 
 export function PodFriendsProvider({ children }) {
   const [friends, setFriends] = useState([]);
-  const [loadingFriends, setLoadingFriends] = useState(false);
+  const [loadingFriends, setLoadingFriends] = useState(true);
   const [errorOcurred, setErrorOcurred] = useState(null);
 
   const { webId } = useSolid();
+
+  useEffect(() => {
+    console.log(friends);
+  }, [friends]);
 
   useEffect(() => {
     if (webId) {

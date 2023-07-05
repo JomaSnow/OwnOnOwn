@@ -170,10 +170,10 @@ export async function deleteCompromisso(comp, compromissos) {
 //   id,
 //   day_time,
 //   friend_pod_url,
-//   status, // 0- pendente, 1- confirmado, 2- cancelado por vc, 3- cancelado pelo amigo
+//   status, // 0- pendente, 1- confirmado, 2- cancelado por vc, 3- cancelado pelo amigo, 4- aguardando sua confirmação
 //   updated_at,
 // }
-export async function getCompromissos(webId) {
+export async function getCompromissos(webId, friendsArr) {
   let id = webId;
 
   if (!webId) {
@@ -208,9 +208,56 @@ export async function getCompromissos(webId) {
       }
     }
 
-    return jsonAfterDeletion;
+    let jsonAfterFriendsCheck = [...jsonAfterDeletion];
+    // check friends responses on existing compromissos only for current user
+    if (!webId && friendsArr) {
+      for (const friend of friendsArr) {
+        const friendsCompromissos = friend.compromissos;
+        const friendWebId = friend.friendWebId;
+
+        // first match compromissos
+        for (const fComp of friendsCompromissos) {
+          // case 1: friend requested compromisso (addCompromisso with status 4)
+          if (fComp.friend_pod_url === id && fComp.status === 0) {
+            const newComp = {
+              day_time: fComp.day_time,
+              friend_pod_url: friendWebId,
+            };
+            await addCompromisso(newComp, 4, jsonAfterFriendsCheck);
+          }
+          for (const comp of jsonAfterDeletion) {
+            // case 2: friend cancelled compromisso (updateCompromisso with status 3)
+            if (
+              fComp.friend_pod_url === id &&
+              comp.friend_pod_url === friendWebId &&
+              fComp.day_time === comp.day_time &&
+              fComp.status === 2
+            ) {
+              // ===> updateCompromisso(comp) with status 3
+            }
+            // case 3: friend confirmed compromisso (updateCompromisso with status 1)
+            if (
+              fComp.friend_pod_url === id &&
+              comp.friend_pod_url === friendWebId &&
+              fComp.day_time === comp.day_time &&
+              fComp.status === 1
+            ) {
+              // ===> updateCompromisso(comp) with status 1
+            }
+          }
+        }
+      }
+    }
+
+    return jsonAfterFriendsCheck;
   } catch (e) {
     if (e.message.includes("404")) {
+      if (!webId) {
+        const initialArr = [];
+        await addCompromisso({}, 0, initialArr);
+        await deleteCompromisso(initialArr[0], initialArr);
+        return getCompromissos(webId, friendsArr);
+      }
       return [];
     } else {
       console.error("Ocorreu um erro no getCompromissos.");
@@ -220,16 +267,14 @@ export async function getCompromissos(webId) {
   }
 }
 
-export async function addCompromisso(compromisso) {
+export async function addCompromisso(compromisso, status = 0, compromissosArr) {
   const webId = getDefaultSession().info.webId;
   const myPods = await getPodUrlAll(webId);
   const podUrl = myPods[0];
 
   const targetFileURL = podUrl + "public/tutor/compromissos.json";
 
-  const fileArr = await getCompromissos();
-
-  for (const comp of fileArr) {
+  for (const comp of compromissosArr) {
     if (
       comp.day_time === compromisso.day_time &&
       comp.friend_pod_url === compromisso.friend_pod_url
@@ -238,8 +283,9 @@ export async function addCompromisso(compromisso) {
     }
   }
 
-  fileArr.push({
+  compromissosArr.push({
     ...compromisso,
+    status: status,
     updated_at: Date.now(),
     id: uuidv4(),
   });
@@ -247,7 +293,7 @@ export async function addCompromisso(compromisso) {
   try {
     await overwriteFile(
       targetFileURL, // URL for the file.
-      JSON.stringify(fileArr), // File
+      JSON.stringify(compromissosArr), // File
       { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
     );
   } catch (error) {
@@ -278,8 +324,9 @@ export async function getSolidFriends() {
       const nome = getLiteral(friendThing, FOAF.name).value;
       const friendWebId = url;
       const agenda = await getAgenda(url);
+      const compromissos = await getCompromissos(url, null);
 
-      const friendObj = { nome, friendWebId, agenda };
+      const friendObj = { nome, friendWebId, agenda, compromissos };
 
       friendsObjArr.push(friendObj);
     }
@@ -355,9 +402,17 @@ export async function getUserProfile() {
     const userFirstName = getLiteral(thing, VCARD.fn);
 
     profile = { firstName: userFirstName.value };
-    return profile;
   } catch (error) {
     console.error(error);
-    throw new Error("Ocorreu um erro");
+    if (error.message.includes("reading 'value'")) {
+      try {
+        const userFirstName = getLiteral(thing, FOAF.name);
+
+        profile = { firstName: userFirstName.value };
+      } catch (e) {
+        console.error(e);
+      }
+    }
   }
+  return profile;
 }

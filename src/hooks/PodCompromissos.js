@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSolid } from "./SolidProvider";
 import { getCompromissos } from "../api/functions/solid";
+import { usePodFriends } from "./PodFriendsProvider";
 
 const PodCompromissosContext = createContext();
 const PodCompromissosUpdateContext = createContext();
@@ -15,16 +16,21 @@ export function usePodCompromissosUpdate() {
 
 export function PodCompromissosProvider({ children }) {
   const [compromissos, setCompromissos] = useState(null);
-  const [loadingCompromissos, setLoadingCompromissos] = useState(false);
+  const [loadingCompromissos, setLoadingCompromissos] = useState(true);
   const [errorOcurred, setErrorOcurred] = useState(null);
 
   const { webId } = useSolid();
+  const { loadingFriends, friends } = usePodFriends();
 
   useEffect(() => {
-    if (webId) {
+    console.log(compromissos);
+  }, [compromissos]);
+
+  useEffect(() => {
+    if (webId && !loadingFriends) {
       setLoadingCompromissos(true);
-      getCompromissos()
-        .then((fetchedCompromissos) => {
+      getCompromissos(null, friends)
+      .then((fetchedCompromissos) => {
           setCompromissos(fetchedCompromissos);
         })
         .catch((error) => {
@@ -37,12 +43,12 @@ export function PodCompromissosProvider({ children }) {
           setLoadingCompromissos(false);
         });
     }
-  }, [webId]);
+  }, [webId, loadingFriends, friends]);
 
   async function fetchCompromissos() {
     if (webId) {
       setLoadingCompromissos(true);
-      getCompromissos()
+      getCompromissos(null, null)
         .then((fetchedCompromissos) => {
           setCompromissos(fetchedCompromissos);
         })

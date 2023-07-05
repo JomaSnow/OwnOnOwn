@@ -7,9 +7,11 @@ import Footer from "../../components/Footer";
 import AgendaComponent from "../../components/AgendaComponent";
 import { usePodAgenda } from "../../hooks/PodAgendaProvider";
 import { useSolid } from "../../hooks/SolidProvider";
+import { usePodCompromissos } from "../../hooks/PodCompromissos";
 
 export default function Display() {
   const { loadingAgenda, errorAgenda } = usePodAgenda();
+  const { loadingCompromissos } = usePodCompromissos();
   const { webId } = useSolid();
   return (
     <>
@@ -18,7 +20,7 @@ export default function Display() {
         <PageTitle>Agenda</PageTitle>
         {!webId ? (
           <h2>Autorize acesso ao seu POD para criar uma agenda.</h2>
-        ) : loadingAgenda ? (
+        ) : loadingAgenda || loadingCompromissos ? (
           <ClipLoader color={colors.accent} />
         ) : errorAgenda ? (
           <h2>{errorAgenda}</h2>
