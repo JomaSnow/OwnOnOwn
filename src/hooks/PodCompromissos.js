@@ -30,7 +30,7 @@ export function PodCompromissosProvider({ children }) {
     if (webId && !loadingFriends) {
       setLoadingCompromissos(true);
       getCompromissos(null, friends)
-      .then((fetchedCompromissos) => {
+        .then((fetchedCompromissos) => {
           setCompromissos(fetchedCompromissos);
         })
         .catch((error) => {

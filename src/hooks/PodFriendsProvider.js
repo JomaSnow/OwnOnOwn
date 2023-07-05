@@ -24,9 +24,9 @@ export function PodFriendsProvider({ children }) {
 
   const { webId } = useSolid();
 
-  useEffect(() => {
-    console.log(friends);
-  }, [friends]);
+  // useEffect(() => {
+  //   console.log(friends);
+  // }, [friends]);
 
   useEffect(() => {
     if (webId) {

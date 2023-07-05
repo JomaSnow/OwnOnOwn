@@ -197,12 +197,16 @@ export async function getCompromissos(webId, friendsArr) {
 
     const ONE_WEEK_IN_MILLI = 604800000;
 
-    // delete cancelled after 1 week
+    // delete cancelled after 1 week or any appointment after 1 month
     let jsonAfterDeletion = json;
 
     for (const comp of json) {
       if (comp.status === 2 || comp.status === 3) {
         if (dateNow > comp.updated_at + ONE_WEEK_IN_MILLI) {
+          jsonAfterDeletion = await deleteCompromisso(comp, jsonAfterDeletion);
+        }
+      } else {
+        if (dateNow > comp.updated_at + ONE_WEEK_IN_MILLI * 4) {
           jsonAfterDeletion = await deleteCompromisso(comp, jsonAfterDeletion);
         }
       }
@@ -217,15 +221,15 @@ export async function getCompromissos(webId, friendsArr) {
 
         // first match compromissos
         for (const fComp of friendsCompromissos) {
-          // case 1: friend requested compromisso (addCompromisso with status 4)
-          if (fComp.friend_pod_url === id && fComp.status === 0) {
-            const newComp = {
-              day_time: fComp.day_time,
-              friend_pod_url: friendWebId,
-            };
-            await addCompromisso(newComp, 4, jsonAfterFriendsCheck);
-          }
           for (const comp of jsonAfterDeletion) {
+            // case 1: friend requested compromisso (addCompromisso with status 4)
+            if (fComp.friend_pod_url === id && fComp.status === 0) {
+              const newComp = {
+                day_time: fComp.day_time,
+                friend_pod_url: friendWebId,
+              };
+              await addCompromisso(newComp, 4, jsonAfterFriendsCheck);
+            }
             // case 2: friend cancelled compromisso (updateCompromisso with status 3)
             if (
               fComp.friend_pod_url === id &&
@@ -233,7 +237,11 @@ export async function getCompromissos(webId, friendsArr) {
               fComp.day_time === comp.day_time &&
               fComp.status === 2
             ) {
-              // ===> updateCompromisso(comp) with status 3
+              jsonAfterFriendsCheck = await updateCompromisso(
+                comp,
+                3,
+                jsonAfterFriendsCheck
+              );
             }
             // case 3: friend confirmed compromisso (updateCompromisso with status 1)
             if (
@@ -242,7 +250,11 @@ export async function getCompromissos(webId, friendsArr) {
               fComp.day_time === comp.day_time &&
               fComp.status === 1
             ) {
-              // ===> updateCompromisso(comp) with status 1
+              jsonAfterFriendsCheck = await updateCompromisso(
+                comp,
+                1,
+                jsonAfterFriendsCheck
+              );
             }
           }
         }
@@ -303,6 +315,31 @@ export async function addCompromisso(compromisso, status = 0, compromissosArr) {
       console.error(error);
     }
   }
+}
+
+export async function updateCompromisso(compromisso, status, compromissosArr) {
+  let notFound = 0;
+
+  for (const comp of compromissosArr) {
+    if (
+      comp.day_time !== compromisso.day_time ||
+      comp.friend_pod_url !== compromisso.friend_pod_url
+    ) {
+      notFound++;
+    }
+  }
+
+  if (notFound === compromissosArr.length) {
+    return compromissosArr;
+  }
+
+  const arrAfterDeletion = await deleteCompromisso(
+    compromisso,
+    compromissosArr
+  );
+  await addCompromisso(compromisso, status, arrAfterDeletion);
+
+  return arrAfterDeletion;
 }
 
 export async function getSolidFriends() {
