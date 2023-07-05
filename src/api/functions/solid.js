@@ -13,8 +13,9 @@ import {
 } from "@inrupt/solid-client";
 import { fetch, getDefaultSession } from "@inrupt/solid-client-authn-browser";
 import { FOAF, VCARD } from "@inrupt/vocab-common-rdf";
+import { v4 as uuidv4 } from "uuid";
 
-// PAra agenda do usuário não passa webId, para de algum amigo passa.
+// Para agenda do usuário não passa webId, para de algum amigo passa.
 export async function getAgenda(webId) {
   let id = webId;
 
@@ -135,63 +136,128 @@ export async function getAgenda(webId) {
   }
 }
 
-// export async function addLikedMeal(meal) {
-//   const webId = getDefaultSession().info.webId;
-//   const myPods = await getPodUrlAll(webId);
-//   const podUrl = myPods[0];
+export async function deleteCompromisso(comp, compromissos) {
+  const webId = getDefaultSession().info.webId;
+  const myPods = await getPodUrlAll(webId);
+  const podUrl = myPods[0];
 
-//   const targetFileURL = podUrl + "public/tutor/agenda.json";
+  const targetFileURL = podUrl + "public/tutor/compromissos.json";
 
-//   const fileArr = await getLikedMeals();
+  const fileArr = compromissos.filter((c) => {
+    return c.id != comp.id;
+  });
 
-//   fileArr.push({
-//     id: meal.id,
-//     tipo_refeicao: meal.tipo_refeicao,
-//     nome: meal.nome,
-//   });
+  try {
+    await overwriteFile(
+      targetFileURL, // URL for the file.
+      JSON.stringify(fileArr), // File
+      { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
+    );
+    return fileArr;
+  } catch (e) {
+    if (e.message.includes("Cannot assign to read only")) {
+      console.warn(e);
+      return fileArr;
+    } else {
+      console.error(e);
+      return compromissos;
+    }
+  }
+}
 
-//   try {
-//     await overwriteFile(
-//       targetFileURL, // URL for the file.
-//       JSON.stringify(fileArr), // File
-//       { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
-//     );
-//   } catch (error) {
-//     if (error.message.includes("Cannot assign to read only")) {
-//       console.warn(error);
-//     } else {
-//       console.error(error);
-//     }
-//   }
+// Para compromissos do usuário não passa webId, para de algum amigo passa.
+// compromisso = {
+//   id,
+//   day_time,
+//   friend_pod_url,
+//   status, // 0- pendente, 1- confirmado, 2- cancelado por vc, 3- cancelado pelo amigo
+//   updated_at,
 // }
+export async function getCompromissos(webId) {
+  let id = webId;
 
-// export async function undoLike(meal) {
-//   const webId = getDefaultSession().info.webId;
-//   const myPods = await getPodUrlAll(webId);
-//   const podUrl = myPods[0];
+  if (!webId) {
+    id = getDefaultSession().info.webId;
+  }
 
-//   const targetFileURL = podUrl + "public/ruview/likedMeals.json";
+  const myPods = await getPodUrlAll(id);
 
-//   try {
-//     const likedMeals = await getLikedMeals();
+  const podUrl = myPods[0];
 
-//     const fileArr = likedMeals.filter((m) => {
-//       return m.id != meal.id;
-//     });
+  const targetFileURL = podUrl + "public/tutor/compromissos.json";
 
-//     await overwriteFile(
-//       targetFileURL, // URL for the file.
-//       JSON.stringify(fileArr), // File
-//       { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
-//     );
-//   } catch (e) {
-//     if (e.message.includes("Cannot assign to read only")) {
-//       console.warn(e);
-//     } else {
-//       console.error(e);
-//     }
-//   }
-// }
+  try {
+    const agenda = await getFile(targetFileURL, { fetch: fetch });
+
+    const blob = await new Response(agenda).text();
+
+    const json = JSON.parse(blob);
+
+    const dateNow = Date.now();
+
+    const ONE_WEEK_IN_MILLI = 604800000;
+
+    // delete cancelled after 1 week
+    let jsonAfterDeletion = json;
+
+    for (const comp of json) {
+      if (comp.status === 2 || comp.status === 3) {
+        if (dateNow > comp.updated_at + ONE_WEEK_IN_MILLI) {
+          jsonAfterDeletion = await deleteCompromisso(comp, jsonAfterDeletion);
+        }
+      }
+    }
+
+    return jsonAfterDeletion;
+  } catch (e) {
+    if (e.message.includes("404")) {
+      return [];
+    } else {
+      console.error("Ocorreu um erro no getCompromissos.");
+      console.error(e);
+      throw new Error(e);
+    }
+  }
+}
+
+export async function addCompromisso(compromisso) {
+  const webId = getDefaultSession().info.webId;
+  const myPods = await getPodUrlAll(webId);
+  const podUrl = myPods[0];
+
+  const targetFileURL = podUrl + "public/tutor/compromissos.json";
+
+  const fileArr = await getCompromissos();
+
+  for (const comp of fileArr) {
+    if (
+      comp.day_time === compromisso.day_time &&
+      comp.friend_pod_url === compromisso.friend_pod_url
+    ) {
+      return;
+    }
+  }
+
+  fileArr.push({
+    ...compromisso,
+    updated_at: Date.now(),
+    id: uuidv4(),
+  });
+
+  try {
+    await overwriteFile(
+      targetFileURL, // URL for the file.
+      JSON.stringify(fileArr), // File
+      { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
+    );
+  } catch (error) {
+    if (error.message.includes("Cannot assign to read only")) {
+      console.warn(error);
+    } else {
+      console.error(error);
+    }
+  }
+}
 
 export async function getSolidFriends() {
   const webId = getDefaultSession().info.webId;

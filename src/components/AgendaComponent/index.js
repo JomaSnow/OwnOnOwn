@@ -82,7 +82,7 @@ export default function AgendaComponent() {
     }
   }, [agenda, initialAgenda]);
 
-  function handleUpdate() {}
+  async function handleUpdate() {}
 
   return (
     <Display handleUpdate={handleUpdate} updateDisabled={updateDisabled} />

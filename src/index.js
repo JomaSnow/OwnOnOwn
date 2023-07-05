@@ -9,6 +9,7 @@ import { SolidProvider } from "./hooks/SolidProvider";
 import { PodAgendaProvider } from "./hooks/PodAgendaProvider";
 import { PodFriendsProvider } from "./hooks/PodFriendsProvider";
 import PerfilPage from "./pages/Perfil";
+import { PodCompromissosProvider } from "./hooks/PodCompromissos";
 
 const router = createBrowserRouter([
   {
@@ -33,11 +34,13 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <SolidProvider>
-      <PodAgendaProvider>
-        <PodFriendsProvider>
-          <RouterProvider router={router} />
-        </PodFriendsProvider>
-      </PodAgendaProvider>
+      <PodFriendsProvider>
+        <PodCompromissosProvider>
+          <PodAgendaProvider>
+            <RouterProvider router={router} />
+          </PodAgendaProvider>
+        </PodCompromissosProvider>
+      </PodFriendsProvider>
     </SolidProvider>
   </React.StrictMode>
 );
