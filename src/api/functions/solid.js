@@ -784,6 +784,24 @@ export async function updateAgenda({
 
 /*Funções de amigos*/
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+export async function isValidFriendWebId(webId) {
+  try {
+    const friendDataSet = await getSolidDataset(webId, { fetch: fetch }); // dataset card
+
+    const friendThing = getThing(friendDataSet, webId); // :me thing ()
+
+    if (friendThing !== null) {
+      return true;
+    } else {
+      window.alert("URL de amigo inválido");
+      return false;
+    }
+  } catch (e) {
+    console.error(e);
+    window.alert("URL de amigo inválido");
+    return false;
+  }
+}
 
 export async function getSolidFriends() {
   const webId = getDefaultSession().info.webId;
@@ -826,9 +844,16 @@ export async function addSolidFriend(friendWebID) {
 
   try {
     let currentFriendsUrl = getUrlAll(thing, FOAF.knows);
+
     if (currentFriendsUrl.some((url) => url === friendWebID)) {
+      window.alert("Vocês já são amigos");
       return "Vocês já são amigos";
     } else {
+      // Check if valid URL
+      if (!(await isValidFriendWebId(friendWebID))) {
+        return "Não é uma URL de amigo válida.";
+      }
+
       // Friend as thing
       let newFriend = buildThing(thing).addUrl(FOAF.knows, friendWebID).build();
 
