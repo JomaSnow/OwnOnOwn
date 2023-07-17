@@ -17,7 +17,7 @@ export default function Display({
   cancelCompromisso = () => {},
 }) {
   return (
-    <CompromissoWrapper>
+    <CompromissoWrapper $status={status}>
       <CompromissoTextArea>
         <CompromissoText>{text}</CompromissoText>
       </CompromissoTextArea>

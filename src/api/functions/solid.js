@@ -595,12 +595,14 @@ export async function getCompromissos(webId, friendsArr) {
   }
 }
 
-export async function addCompromisso(compromisso, status = 0, compromissosArr) {
+export async function addCompromisso(compromisso, status = 0, compromissos) {
   const webId = getDefaultSession().info.webId;
   const myPods = await getPodUrlAll(webId);
   const podUrl = myPods[0];
 
   const targetFileURL = podUrl + "public/tutor/compromissos.json";
+
+  const compromissosArr = compromissos;
 
   for (const comp of compromissosArr) {
     if (
@@ -608,7 +610,7 @@ export async function addCompromisso(compromisso, status = 0, compromissosArr) {
       comp.friend_pod_url === compromisso.friend_pod_url &&
       (comp.status === 0 || comp.status === 1 || comp.status === 4)
     ) {
-      return;
+      return compromissos;
     }
   }
 
@@ -625,11 +627,14 @@ export async function addCompromisso(compromisso, status = 0, compromissosArr) {
       JSON.stringify(compromissosArr), // File
       { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
     );
+    return compromissosArr;
   } catch (error) {
     if (error.message.includes("Cannot assign to read only")) {
       console.warn(error);
+      return compromissosArr;
     } else {
       console.error(error);
+      return compromissos;
     }
   }
 }

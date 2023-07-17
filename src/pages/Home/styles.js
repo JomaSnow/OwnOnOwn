@@ -37,18 +37,21 @@ export const TextLink = styled(Link)`
   align-self: center;
 `;
 
-export const MealsSection = styled.section`
+export const FriendAgendaSection = styled.section`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 6rem 3rem;
+`;
+
+export const FriendSelectionArea = styled.div`
+  position: relative;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  padding: 1rem 0;
   width: 100%;
-  margin: 6rem 0;
-`;
-
-export const RestaurantArea = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex: 1;
 `;

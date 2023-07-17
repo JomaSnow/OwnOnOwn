@@ -1,6 +1,10 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSolid } from "./SolidProvider";
-import { getCompromissos, updateCompromisso } from "../api/functions/solid";
+import {
+  addCompromisso,
+  getCompromissos,
+  updateCompromisso,
+} from "../api/functions/solid";
 import { usePodFriends } from "./PodFriendsProvider";
 
 const PodCompromissosContext = createContext();
@@ -95,6 +99,18 @@ export function PodCompromissosProvider({ children }) {
     setLoadingCompromissos(false);
   }
 
+  async function addCompromissosState(day_time, friend_pod_url) {
+    setLoadingCompromissos(true);
+
+    const newComp = { day_time, friend_pod_url };
+
+    const updatedCompromissos = await addCompromisso(newComp, 0, compromissos);
+
+    setCompromissos(updatedCompromissos);
+
+    setLoadingCompromissos(false);
+  }
+
   return (
     <PodCompromissosContext.Provider
       value={{
@@ -104,7 +120,11 @@ export function PodCompromissosProvider({ children }) {
       }}
     >
       <PodCompromissosUpdateContext.Provider
-        value={{ fetchCompromissos, updateCompromissosState }}
+        value={{
+          fetchCompromissos,
+          updateCompromissosState,
+          addCompromissosState,
+        }}
       >
         {children}
       </PodCompromissosUpdateContext.Provider>

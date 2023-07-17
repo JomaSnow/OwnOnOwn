@@ -17,7 +17,8 @@ export const CompromissoWrapper = styled.div`
   width: 100%;
   padding: 2px 1rem;
   margin: 0.5rem 0;
-  border: 1px solid ${colors.accent};
+  border: 1px solid
+    ${(props) => (props.$status === 1 ? colors.booked : colors.accent)};
   border-radius: 4rem;
 `;
 
