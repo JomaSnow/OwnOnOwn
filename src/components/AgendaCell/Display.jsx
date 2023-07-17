@@ -11,6 +11,7 @@ import {
 import Modal from "react-modal";
 import MainButton from "../MainButton";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
+import Compromisso from "../Compromisso";
 
 export default function Display({
   status,
@@ -21,6 +22,7 @@ export default function Display({
   paragraphText,
   modalAction = () => {},
   actionText,
+  compromissosCell = [],
 }) {
   Modal.setAppElement("#root");
   return (
@@ -44,6 +46,17 @@ export default function Display({
         </ModalHeaderArea>
         <ModalBodyArea>
           <ModalParagraph>{paragraphText}</ModalParagraph>
+          {compromissosCell.map((comp) => {
+            if (
+              status !== 1 &&
+              status !== 0 &&
+              comp.status !== 2 &&
+              comp.status !== 3
+            ) {
+              return <Compromisso key={comp.id} compromisso={comp} />;
+            }
+            return null;
+          })}
           <MainButton text={actionText} onClick={modalAction} />
         </ModalBodyArea>
       </Modal>

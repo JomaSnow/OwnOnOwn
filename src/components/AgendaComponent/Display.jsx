@@ -2,6 +2,10 @@ import React from "react";
 import {
   ActionRow,
   AgendaArea,
+  CaptionCell,
+  CaptionLabel,
+  CaptionRow,
+  CaptionWrapper,
   CellRow,
   Column,
   HeaderRow,
@@ -421,6 +425,24 @@ export default function Display({ handleUpdate = () => {}, updateDisabled }) {
           ></Cell>
         </Column>
       </CellRow>
+      <CaptionRow>
+        <CaptionWrapper>
+          <CaptionCell $status={0} />
+          <CaptionLabel>Indisponível</CaptionLabel>
+        </CaptionWrapper>
+        <CaptionWrapper>
+          <CaptionCell $status={1} />
+          <CaptionLabel>Livre</CaptionLabel>
+        </CaptionWrapper>
+        <CaptionWrapper>
+          <CaptionCell $status={2} />
+          <CaptionLabel>Pendente</CaptionLabel>
+        </CaptionWrapper>
+        <CaptionWrapper>
+          <CaptionCell $status={3} />
+          <CaptionLabel>Ocupado</CaptionLabel>
+        </CaptionWrapper>
+      </CaptionRow>
       <ActionRow>
         <InfoSpan>
           atualizado em {new Date(agenda.updated_at).toLocaleString()}

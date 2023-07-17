@@ -1,4 +1,14 @@
 /* eslint eqeqeq: "off" */
+
+// [
+//   {
+//       "id": "dbuisa-1-njoi",
+//       "day_time": "segunda_10",
+//       "friend_pod_url": "https://jomasnow.solidcommunity.net/profile/card#me",
+//       "status": 4,
+//       "updated_at": 1689570780569
+//   }
+// ]
 import {
   getPodUrlAll,
   overwriteFile,
@@ -16,7 +26,7 @@ import { FOAF, VCARD } from "@inrupt/vocab-common-rdf";
 import { v4 as uuidv4 } from "uuid";
 
 // Para agenda do usuário não passa webId, para de algum amigo passa.
-export async function getAgenda(webId) {
+export async function getAgenda(webId, compromissosArr) {
   let id = webId;
 
   if (!webId) {
@@ -29,8 +39,6 @@ export async function getAgenda(webId) {
 
   const targetFileURL = podUrl + "public/tutor/agenda.json";
 
-  const dateNow = Date.now();
-
   try {
     const agenda = await getFile(targetFileURL, { fetch: fetch });
 
@@ -38,91 +46,399 @@ export async function getAgenda(webId) {
 
     const json = JSON.parse(blob);
 
-    return json;
+    let currentAgenda = { ...json };
+
+    if (!webId) {
+      let hadChanges = 0;
+
+      //sync / reset agenda in case compromissos are deleted before agenda can be update (i.e. auto deleted after some weeks)
+      if (
+        currentAgenda["segunda_06"] === 2 ||
+        currentAgenda["segunda_06"] === 3
+      ) {
+        currentAgenda["segunda_06"] = 1;
+      }
+      if (
+        currentAgenda["segunda_08"] === 2 ||
+        currentAgenda["segunda_08"] === 3
+      ) {
+        currentAgenda["segunda_08"] = 1;
+      }
+      if (
+        currentAgenda["segunda_10"] === 2 ||
+        currentAgenda["segunda_10"] === 3
+      ) {
+        currentAgenda["segunda_10"] = 1;
+      }
+      if (
+        currentAgenda["segunda_12"] === 2 ||
+        currentAgenda["segunda_12"] === 3
+      ) {
+        currentAgenda["segunda_12"] = 1;
+      }
+      if (
+        currentAgenda["segunda_14"] === 2 ||
+        currentAgenda["segunda_14"] === 3
+      ) {
+        currentAgenda["segunda_14"] = 1;
+      }
+      if (
+        currentAgenda["segunda_16"] === 2 ||
+        currentAgenda["segunda_16"] === 3
+      ) {
+        currentAgenda["segunda_16"] = 1;
+      }
+      if (
+        currentAgenda["segunda_18"] === 2 ||
+        currentAgenda["segunda_18"] === 3
+      ) {
+        currentAgenda["segunda_18"] = 1;
+      }
+      if (
+        currentAgenda["segunda_20"] === 2 ||
+        currentAgenda["segunda_20"] === 3
+      ) {
+        currentAgenda["segunda_20"] = 1;
+      }
+      if (
+        currentAgenda["segunda_22"] === 2 ||
+        currentAgenda["segunda_22"] === 3
+      ) {
+        currentAgenda["segunda_22"] = 1;
+      }
+      if (currentAgenda["terca_06"] === 2 || currentAgenda["terca_06"] === 3) {
+        currentAgenda["terca_06"] = 1;
+      }
+      if (currentAgenda["terca_08"] === 2 || currentAgenda["terca_08"] === 3) {
+        currentAgenda["terca_08"] = 1;
+      }
+      if (currentAgenda["terca_10"] === 2 || currentAgenda["terca_10"] === 3) {
+        currentAgenda["terca_10"] = 1;
+      }
+      if (currentAgenda["terca_12"] === 2 || currentAgenda["terca_12"] === 3) {
+        currentAgenda["terca_12"] = 1;
+      }
+      if (currentAgenda["terca_14"] === 2 || currentAgenda["terca_14"] === 3) {
+        currentAgenda["terca_14"] = 1;
+      }
+      if (currentAgenda["terca_16"] === 2 || currentAgenda["terca_16"] === 3) {
+        currentAgenda["terca_16"] = 1;
+      }
+      if (currentAgenda["terca_18"] === 2 || currentAgenda["terca_18"] === 3) {
+        currentAgenda["terca_18"] = 1;
+      }
+      if (currentAgenda["terca_20"] === 2 || currentAgenda["terca_20"] === 3) {
+        currentAgenda["terca_20"] = 1;
+      }
+      if (currentAgenda["terca_22"] === 2 || currentAgenda["terca_22"] === 3) {
+        currentAgenda["terca_22"] = 1;
+      }
+      if (
+        currentAgenda["quarta_06"] === 2 ||
+        currentAgenda["quarta_06"] === 3
+      ) {
+        currentAgenda["quarta_06"] = 1;
+      }
+      if (
+        currentAgenda["quarta_08"] === 2 ||
+        currentAgenda["quarta_08"] === 3
+      ) {
+        currentAgenda["quarta_08"] = 1;
+      }
+      if (
+        currentAgenda["quarta_10"] === 2 ||
+        currentAgenda["quarta_10"] === 3
+      ) {
+        currentAgenda["quarta_10"] = 1;
+      }
+      if (
+        currentAgenda["quarta_12"] === 2 ||
+        currentAgenda["quarta_12"] === 3
+      ) {
+        currentAgenda["quarta_12"] = 1;
+      }
+      if (
+        currentAgenda["quarta_14"] === 2 ||
+        currentAgenda["quarta_14"] === 3
+      ) {
+        currentAgenda["quarta_14"] = 1;
+      }
+      if (
+        currentAgenda["quarta_16"] === 2 ||
+        currentAgenda["quarta_16"] === 3
+      ) {
+        currentAgenda["quarta_16"] = 1;
+      }
+      if (
+        currentAgenda["quarta_18"] === 2 ||
+        currentAgenda["quarta_18"] === 3
+      ) {
+        currentAgenda["quarta_18"] = 1;
+      }
+      if (
+        currentAgenda["quarta_20"] === 2 ||
+        currentAgenda["quarta_20"] === 3
+      ) {
+        currentAgenda["quarta_20"] = 1;
+      }
+      if (
+        currentAgenda["quarta_22"] === 2 ||
+        currentAgenda["quarta_22"] === 3
+      ) {
+        currentAgenda["quarta_22"] = 1;
+      }
+      if (
+        currentAgenda["quinta_06"] === 2 ||
+        currentAgenda["quinta_06"] === 3
+      ) {
+        currentAgenda["quinta_06"] = 1;
+      }
+      if (
+        currentAgenda["quinta_08"] === 2 ||
+        currentAgenda["quinta_08"] === 3
+      ) {
+        currentAgenda["quinta_08"] = 1;
+      }
+      if (
+        currentAgenda["quinta_10"] === 2 ||
+        currentAgenda["quinta_10"] === 3
+      ) {
+        currentAgenda["quinta_10"] = 1;
+      }
+      if (
+        currentAgenda["quinta_12"] === 2 ||
+        currentAgenda["quinta_12"] === 3
+      ) {
+        currentAgenda["quinta_12"] = 1;
+      }
+      if (
+        currentAgenda["quinta_14"] === 2 ||
+        currentAgenda["quinta_14"] === 3
+      ) {
+        currentAgenda["quinta_14"] = 1;
+      }
+      if (
+        currentAgenda["quinta_16"] === 2 ||
+        currentAgenda["quinta_16"] === 3
+      ) {
+        currentAgenda["quinta_16"] = 1;
+      }
+      if (
+        currentAgenda["quinta_18"] === 2 ||
+        currentAgenda["quinta_18"] === 3
+      ) {
+        currentAgenda["quinta_18"] = 1;
+      }
+      if (
+        currentAgenda["quinta_20"] === 2 ||
+        currentAgenda["quinta_20"] === 3
+      ) {
+        currentAgenda["quinta_20"] = 1;
+      }
+      if (
+        currentAgenda["quinta_22"] === 2 ||
+        currentAgenda["quinta_22"] === 3
+      ) {
+        currentAgenda["quinta_22"] = 1;
+      }
+      if (currentAgenda["sexta_06"] === 2 || currentAgenda["sexta_06"] === 3) {
+        currentAgenda["sexta_06"] = 1;
+      }
+      if (currentAgenda["sexta_08"] === 2 || currentAgenda["sexta_08"] === 3) {
+        currentAgenda["sexta_08"] = 1;
+      }
+      if (currentAgenda["sexta_10"] === 2 || currentAgenda["sexta_10"] === 3) {
+        currentAgenda["sexta_10"] = 1;
+      }
+      if (currentAgenda["sexta_12"] === 2 || currentAgenda["sexta_12"] === 3) {
+        currentAgenda["sexta_12"] = 1;
+      }
+      if (currentAgenda["sexta_14"] === 2 || currentAgenda["sexta_14"] === 3) {
+        currentAgenda["sexta_14"] = 1;
+      }
+      if (currentAgenda["sexta_16"] === 2 || currentAgenda["sexta_16"] === 3) {
+        currentAgenda["sexta_16"] = 1;
+      }
+      if (currentAgenda["sexta_18"] === 2 || currentAgenda["sexta_18"] === 3) {
+        currentAgenda["sexta_18"] = 1;
+      }
+      if (currentAgenda["sexta_20"] === 2 || currentAgenda["sexta_20"] === 3) {
+        currentAgenda["sexta_20"] = 1;
+      }
+      if (currentAgenda["sexta_22"] === 2 || currentAgenda["sexta_22"] === 3) {
+        currentAgenda["sexta_22"] = 1;
+      }
+      if (
+        currentAgenda["sabado_06"] === 2 ||
+        currentAgenda["sabado_06"] === 3
+      ) {
+        currentAgenda["sabado_06"] = 1;
+      }
+      if (
+        currentAgenda["sabado_08"] === 2 ||
+        currentAgenda["sabado_08"] === 3
+      ) {
+        currentAgenda["sabado_08"] = 1;
+      }
+      if (
+        currentAgenda["sabado_10"] === 2 ||
+        currentAgenda["sabado_10"] === 3
+      ) {
+        currentAgenda["sabado_10"] = 1;
+      }
+      if (
+        currentAgenda["sabado_12"] === 2 ||
+        currentAgenda["sabado_12"] === 3
+      ) {
+        currentAgenda["sabado_12"] = 1;
+      }
+      if (
+        currentAgenda["sabado_14"] === 2 ||
+        currentAgenda["sabado_14"] === 3
+      ) {
+        currentAgenda["sabado_14"] = 1;
+      }
+      if (
+        currentAgenda["sabado_16"] === 2 ||
+        currentAgenda["sabado_16"] === 3
+      ) {
+        currentAgenda["sabado_16"] = 1;
+      }
+      if (
+        currentAgenda["sabado_18"] === 2 ||
+        currentAgenda["sabado_18"] === 3
+      ) {
+        currentAgenda["sabado_18"] = 1;
+      }
+      if (
+        currentAgenda["sabado_20"] === 2 ||
+        currentAgenda["sabado_20"] === 3
+      ) {
+        currentAgenda["sabado_20"] = 1;
+      }
+      if (
+        currentAgenda["sabado_22"] === 2 ||
+        currentAgenda["sabado_22"] === 3
+      ) {
+        currentAgenda["sabado_22"] = 1;
+      }
+      if (
+        currentAgenda["domingo_06"] === 2 ||
+        currentAgenda["domingo_06"] === 3
+      ) {
+        currentAgenda["domingo_06"] = 1;
+      }
+      if (
+        currentAgenda["domingo_08"] === 2 ||
+        currentAgenda["domingo_08"] === 3
+      ) {
+        currentAgenda["domingo_08"] = 1;
+      }
+      if (
+        currentAgenda["domingo_10"] === 2 ||
+        currentAgenda["domingo_10"] === 3
+      ) {
+        currentAgenda["domingo_10"] = 1;
+      }
+      if (
+        currentAgenda["domingo_12"] === 2 ||
+        currentAgenda["domingo_12"] === 3
+      ) {
+        currentAgenda["domingo_12"] = 1;
+      }
+      if (
+        currentAgenda["domingo_14"] === 2 ||
+        currentAgenda["domingo_14"] === 3
+      ) {
+        currentAgenda["domingo_14"] = 1;
+      }
+      if (
+        currentAgenda["domingo_16"] === 2 ||
+        currentAgenda["domingo_16"] === 3
+      ) {
+        currentAgenda["domingo_16"] = 1;
+      }
+      if (
+        currentAgenda["domingo_18"] === 2 ||
+        currentAgenda["domingo_18"] === 3
+      ) {
+        currentAgenda["domingo_18"] = 1;
+      }
+      if (
+        currentAgenda["domingo_20"] === 2 ||
+        currentAgenda["domingo_20"] === 3
+      ) {
+        currentAgenda["domingo_20"] = 1;
+      }
+      if (
+        currentAgenda["domingo_22"] === 2 ||
+        currentAgenda["domingo_22"] === 3
+      ) {
+        currentAgenda["domingo_22"] = 1;
+      }
+
+      for (const comp of compromissosArr) {
+        if (comp.status === 0 || comp.status === 4) {
+          hadChanges++;
+          currentAgenda = await updateAgenda({
+            day_time: comp.day_time,
+            status: 2,
+            currentAgenda: currentAgenda,
+          });
+        }
+        if (comp.status === 2 || comp.status === 3) {
+          hadChanges++;
+
+          const compsOnSameDay = [];
+
+          for (const sameDayComp of compromissosArr) {
+            if (
+              sameDayComp.day_time === comp.day_time &&
+              comp.id !== sameDayComp.id
+            ) {
+              compsOnSameDay.push(sameDayComp);
+            }
+          }
+
+          let noOtherValidCompsOnSameDay = true;
+
+          for (const sameDayComp of compsOnSameDay) {
+            if (sameDayComp.status !== 2 || sameDayComp.status !== 3) {
+              noOtherValidCompsOnSameDay = false;
+            }
+          }
+
+          if (noOtherValidCompsOnSameDay) {
+            currentAgenda = await updateAgenda({
+              day_time: comp.day_time,
+              status: 1,
+              currentAgenda: currentAgenda,
+            });
+          }
+        }
+        if (comp.status === 1) {
+          hadChanges++;
+          currentAgenda = await updateAgenda({
+            day_time: comp.day_time,
+            status: 3,
+            currentAgenda: currentAgenda,
+          });
+        }
+      }
+
+      if (hadChanges > 0) {
+        currentAgenda = await updateAgenda({
+          updateEverything: true,
+          updatedAgenda: currentAgenda,
+        });
+      }
+    }
+
+    return currentAgenda;
   } catch (e) {
     if (e.message.includes("404")) {
       if (!webId) {
-        const file = {
-          updated_at: dateNow,
-          segunda_06: 0,
-          segunda_08: 0,
-          segunda_10: 0,
-          segunda_12: 0,
-          segunda_14: 0,
-          segunda_16: 0,
-          segunda_18: 0,
-          segunda_20: 0,
-          segunda_22: 0,
-          terca_06: 0,
-          terca_08: 0,
-          terca_10: 0,
-          terca_12: 0,
-          terca_14: 0,
-          terca_16: 0,
-          terca_18: 0,
-          terca_20: 0,
-          terca_22: 0,
-          quarta_06: 0,
-          quarta_08: 0,
-          quarta_10: 0,
-          quarta_12: 0,
-          quarta_14: 0,
-          quarta_16: 0,
-          quarta_18: 0,
-          quarta_20: 0,
-          quarta_22: 0,
-          quinta_06: 0,
-          quinta_08: 0,
-          quinta_10: 0,
-          quinta_12: 0,
-          quinta_14: 0,
-          quinta_16: 0,
-          quinta_18: 0,
-          quinta_20: 0,
-          quinta_22: 0,
-          sexta_06: 0,
-          sexta_08: 0,
-          sexta_10: 0,
-          sexta_12: 0,
-          sexta_14: 0,
-          sexta_16: 0,
-          sexta_18: 0,
-          sexta_20: 0,
-          sexta_22: 0,
-          sabado_06: 0,
-          sabado_08: 0,
-          sabado_10: 0,
-          sabado_12: 0,
-          sabado_14: 0,
-          sabado_16: 0,
-          sabado_18: 0,
-          sabado_20: 0,
-          sabado_22: 0,
-          domingo_06: 0,
-          domingo_08: 0,
-          domingo_10: 0,
-          domingo_12: 0,
-          domingo_14: 0,
-          domingo_16: 0,
-          domingo_18: 0,
-          domingo_20: 0,
-          domingo_22: 0,
-        };
-
-        try {
-          await overwriteFile(
-            targetFileURL, // URL for the file.
-            JSON.stringify(file), // File
-            { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
-          );
-          return file;
-        } catch (error) {
-          if (error.message.includes("Cannot assign to read only")) {
-            console.warn(error);
-          } else {
-            console.error(error);
-          }
-        }
+        return await updateAgenda({ updateEverything: true });
       } else {
         console.error("Este amigo ainda não utiliza Tutor.");
         console.error(e);
@@ -289,7 +605,8 @@ export async function addCompromisso(compromisso, status = 0, compromissosArr) {
   for (const comp of compromissosArr) {
     if (
       comp.day_time === compromisso.day_time &&
-      comp.friend_pod_url === compromisso.friend_pod_url
+      comp.friend_pod_url === compromisso.friend_pod_url &&
+      (comp.status === 0 || comp.status === 1 || comp.status === 4)
     ) {
       return;
     }
@@ -341,6 +658,132 @@ export async function updateCompromisso(compromisso, status, compromissosArr) {
 
   return arrAfterDeletion;
 }
+
+// Somente persiste no POD quando atualiza a agenda inteira, senao retorna atualizações locais
+export async function updateAgenda({
+  currentAgenda,
+  updateEverything = false,
+  updatedAgenda = null,
+  day_time,
+  status,
+}) {
+  const webId = getDefaultSession().info.webId;
+  const myPods = await getPodUrlAll(webId);
+  const podUrl = myPods[0];
+
+  const targetFileURL = podUrl + "public/tutor/agenda.json";
+
+  const dateNow = Date.now();
+
+  let newAgenda = {
+    updated_at: dateNow,
+    segunda_06: 0,
+    segunda_08: 0,
+    segunda_10: 0,
+    segunda_12: 0,
+    segunda_14: 0,
+    segunda_16: 0,
+    segunda_18: 0,
+    segunda_20: 0,
+    segunda_22: 0,
+    terca_06: 0,
+    terca_08: 0,
+    terca_10: 0,
+    terca_12: 0,
+    terca_14: 0,
+    terca_16: 0,
+    terca_18: 0,
+    terca_20: 0,
+    terca_22: 0,
+    quarta_06: 0,
+    quarta_08: 0,
+    quarta_10: 0,
+    quarta_12: 0,
+    quarta_14: 0,
+    quarta_16: 0,
+    quarta_18: 0,
+    quarta_20: 0,
+    quarta_22: 0,
+    quinta_06: 0,
+    quinta_08: 0,
+    quinta_10: 0,
+    quinta_12: 0,
+    quinta_14: 0,
+    quinta_16: 0,
+    quinta_18: 0,
+    quinta_20: 0,
+    quinta_22: 0,
+    sexta_06: 0,
+    sexta_08: 0,
+    sexta_10: 0,
+    sexta_12: 0,
+    sexta_14: 0,
+    sexta_16: 0,
+    sexta_18: 0,
+    sexta_20: 0,
+    sexta_22: 0,
+    sabado_06: 0,
+    sabado_08: 0,
+    sabado_10: 0,
+    sabado_12: 0,
+    sabado_14: 0,
+    sabado_16: 0,
+    sabado_18: 0,
+    sabado_20: 0,
+    sabado_22: 0,
+    domingo_06: 0,
+    domingo_08: 0,
+    domingo_10: 0,
+    domingo_12: 0,
+    domingo_14: 0,
+    domingo_16: 0,
+    domingo_18: 0,
+    domingo_20: 0,
+    domingo_22: 0,
+  };
+
+  try {
+    if (!updateEverything) {
+      if (currentAgenda[day_time] === status) {
+        // no need to update, can return
+        return currentAgenda;
+      }
+
+      newAgenda = currentAgenda;
+      newAgenda[day_time] = status;
+      return newAgenda;
+    } else {
+      if (!updatedAgenda) {
+        console.warn("updatedAgenda is null. Reseting Agenda");
+      } else {
+        newAgenda = updatedAgenda;
+        newAgenda.updated_at = dateNow;
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error(error);
+  }
+
+  try {
+    await overwriteFile(
+      targetFileURL, // URL for the file.
+      JSON.stringify(newAgenda), // File
+      { contentType: "application/json", fetch: fetch } // mimetype if known, fetch from the authenticated session
+    );
+    return newAgenda;
+  } catch (error) {
+    if (error.message.includes("Cannot assign to read only")) {
+      console.warn(error);
+      return newAgenda;
+    } else {
+      console.error(error);
+    }
+  }
+}
+
+/*Funções de amigos*/
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function getSolidFriends() {
   const webId = getDefaultSession().info.webId;

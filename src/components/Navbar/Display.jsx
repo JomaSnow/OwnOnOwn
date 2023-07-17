@@ -35,7 +35,7 @@ export default function Display({
   return (
     <>
       <HeaderBackground>
-        <LogoText>Own-On-Own: Tutor</LogoText>
+        <LogoText>Tutor</LogoText>
         <NavigationArea>
           <HeaderLink to={"/"} $selected={currentPage == 0}>
             Home

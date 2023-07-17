@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Display from "./Display";
-import { usePodAgenda } from "../../hooks/PodAgendaProvider";
+import {
+  usePodAgenda,
+  usePodAgendaUpdate,
+} from "../../hooks/PodAgendaProvider";
 
 export default function AgendaComponent() {
   const [updateDisabled, setUpdateDisabled] = useState(true);
 
   const { agenda, initialAgenda } = usePodAgenda();
+  const { updateAgendaState } = usePodAgendaUpdate();
 
   // set disabled when agenda changes
   useEffect(() => {
@@ -82,7 +86,9 @@ export default function AgendaComponent() {
     }
   }, [agenda, initialAgenda]);
 
-  async function handleUpdate() {}
+  async function handleUpdate() {
+    await updateAgendaState();
+  }
 
   return (
     <Display handleUpdate={handleUpdate} updateDisabled={updateDisabled} />

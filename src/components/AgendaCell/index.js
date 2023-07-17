@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Display from "./Display";
 import { getModalTitleFromCellDayTime } from "../../util/modalTitle";
 import { usePodAgendaUpdate } from "../../hooks/PodAgendaProvider";
+import { usePodCompromissos } from "../../hooks/PodCompromissos";
 
 export default function AgendaCell({ availability = 0, cell_day_time }) {
   const [status, setStatus] = useState(availability);
@@ -9,8 +10,20 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
   const [title, setTitle] = useState("");
   const [paragraph, setParagraph] = useState("");
   const [actionText, setActionText] = useState("");
+  const [compromissosCell, setCompromissosCell] = useState([]);
 
   const { setAgenda } = usePodAgendaUpdate();
+  const { compromissos } = usePodCompromissos();
+
+  useEffect(() => {
+    const comps = [];
+    for (const comp of compromissos) {
+      if (comp.day_time === cell_day_time) {
+        comps.push(comp);
+      }
+    }
+    setCompromissosCell(comps);
+  }, [compromissos, cell_day_time]);
 
   useEffect(() => {
     setStatus(availability);
@@ -33,14 +46,14 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
 
       case 2:
         setParagraph(
-          "Este horário está com uma reunião pendente de confirmação."
+          "Este horário está com uma ou mais reuniões pendentes de confirmação."
         );
         setActionText("OK");
         break;
 
       case 3:
-        setParagraph("Este horário está com uma reunião marcada.");
-        setActionText("CANCELAR REUNIÃO");
+        setParagraph("Este horário está com uma reunião confirmada.");
+        setActionText("OK");
         break;
 
       default:
@@ -76,12 +89,8 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
         });
         break;
 
-      case 3:
-        console.log("Cancelar reunião agendada");
-        break;
-
       default:
-        console.log("Ação");
+        console.log("OK");
         break;
     }
     closeModal();
@@ -97,6 +106,7 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
       paragraphText={paragraph}
       modalAction={actionModal}
       actionText={actionText}
+      compromissosCell={compromissosCell}
     />
   );
 }

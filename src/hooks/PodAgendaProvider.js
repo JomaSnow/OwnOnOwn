@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSolid } from "./SolidProvider";
-import { getAgenda } from "../api/functions/solid";
+import { getAgenda, updateAgenda } from "../api/functions/solid";
+import { usePodCompromissos } from "./PodCompromissos";
 
 const PodAgendaContext = createContext();
 const PodAgendaUpdateContext = createContext();
@@ -20,11 +21,16 @@ export function PodAgendaProvider({ children }) {
   const [errorOcurred, setErrorOcurred] = useState(null);
 
   const { webId } = useSolid();
+  const { loadingCompromissos, compromissos } = usePodCompromissos();
 
   useEffect(() => {
-    if (webId) {
+    console.log(agenda);
+  }, [agenda]);
+
+  useEffect(() => {
+    if (webId && !loadingCompromissos) {
       setLoadingAgenda(true);
-      getAgenda()
+      getAgenda(null, compromissos)
         .then((fetchedAgenda) => {
           setAgenda(fetchedAgenda);
           setInitialAgenda(fetchedAgenda);
@@ -37,28 +43,20 @@ export function PodAgendaProvider({ children }) {
           setLoadingAgenda(false);
         });
     }
-  }, [webId]);
+  }, [webId, loadingCompromissos, compromissos]);
 
-  async function addLiked(meal) {
-    // try {
-    //   await addLikedMeal(meal);
-    //   const newLikedMeals = await getAgenda();
-    //   setAgenda(newLikedMeals);
-    // } catch (error) {
-    //   setErrorOcurred("Ocorreu um erro ao curtir refeição.");
-    //   console.error(error);
-    // }
-  }
+  async function updateAgendaState() {
+    setLoadingAgenda(true);
 
-  async function undoLiked(meal) {
-    // try {
-    //   await undoLike(meal);
-    //   const newLikedMeals = await getAgenda();
-    //   setAgenda(newLikedMeals);
-    // } catch (error) {
-    //   setErrorOcurred("Ocorreu um erro ao desfazer curtir.");
-    //   console.error(error);
-    // }
+    const updatedAgenda = await updateAgenda({
+      updateEverything: true,
+      updatedAgenda: agenda,
+    });
+
+    setAgenda(updatedAgenda);
+    setInitialAgenda(updatedAgenda);
+
+    setLoadingAgenda(false);
   }
 
   return (
@@ -70,9 +68,7 @@ export function PodAgendaProvider({ children }) {
         errorAgenda: errorOcurred,
       }}
     >
-      <PodAgendaUpdateContext.Provider
-        value={{ addLiked, undoLiked, setAgenda }}
-      >
+      <PodAgendaUpdateContext.Provider value={{ updateAgendaState, setAgenda }}>
         {children}
       </PodAgendaUpdateContext.Provider>
     </PodAgendaContext.Provider>

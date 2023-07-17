@@ -12,7 +12,7 @@ export async function solidLogin(
     await login({
       oidcIssuer: podUrl,
       redirectUrl: window.location.href,
-      clientName: "Ruview",
+      clientName: "Tutor",
     });
     setWebIdSolidUpdateContextHook(getDefaultSession().info.webId);
   }

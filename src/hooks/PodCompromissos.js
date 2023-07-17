@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSolid } from "./SolidProvider";
-import { getCompromissos } from "../api/functions/solid";
+import { getCompromissos, updateCompromisso } from "../api/functions/solid";
 import { usePodFriends } from "./PodFriendsProvider";
 
 const PodCompromissosContext = createContext();
@@ -64,6 +64,37 @@ export function PodCompromissosProvider({ children }) {
     }
   }
 
+  async function updateCompromissosState(comp, status) {
+    setLoadingCompromissos(true);
+
+    let auxComps = compromissos;
+
+    if (status === 1) {
+      const compsOnSameDay = [];
+
+      for (const sameDayComp of compromissos) {
+        if (
+          sameDayComp.day_time === comp.day_time &&
+          comp.id !== sameDayComp.id
+        ) {
+          compsOnSameDay.push(sameDayComp);
+        }
+      }
+
+      for (const sameDayComp of compsOnSameDay) {
+        if (sameDayComp.status !== 3) {
+          auxComps = await updateCompromisso(sameDayComp, 2, auxComps);
+        }
+      }
+    }
+
+    const updatedCompromissos = await updateCompromisso(comp, status, auxComps);
+
+    setCompromissos(updatedCompromissos);
+
+    setLoadingCompromissos(false);
+  }
+
   return (
     <PodCompromissosContext.Provider
       value={{
@@ -72,7 +103,9 @@ export function PodCompromissosProvider({ children }) {
         errorCompromissos: errorOcurred,
       }}
     >
-      <PodCompromissosUpdateContext.Provider value={{ fetchCompromissos }}>
+      <PodCompromissosUpdateContext.Provider
+        value={{ fetchCompromissos, updateCompromissosState }}
+      >
         {children}
       </PodCompromissosUpdateContext.Provider>
     </PodCompromissosContext.Provider>
