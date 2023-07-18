@@ -3,7 +3,7 @@ import {
   handleIncomingRedirect,
 } from "@inrupt/solid-client-authn-browser";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { getUserProfile } from "../api/functions/solid";
+import { getLikedMeals, getUserProfile } from "../api/functions/solid";
 
 const SolidContext = createContext();
 const SolidUpdateContext = createContext();
@@ -20,6 +20,12 @@ export function SolidProvider({ children }) {
   const [webId, setWebId] = useState(null);
   const [userProfile, setUserProfile] = useState();
   const [loadingProfile, setLoadingProfile] = useState(false);
+  const [userLikedMeals, setUserLikedMeals] = useState([]);
+  const [loadingLikedMeals, setLoadingLikedMeals] = useState(false);
+
+  useEffect(() => {
+    console.log(userLikedMeals);
+  }, [userLikedMeals]);
 
   // setta webId
   useEffect(() => {
@@ -44,8 +50,27 @@ export function SolidProvider({ children }) {
     }
   }, [webId]);
 
+  // setta likedMeals
+  useEffect(() => {
+    if (webId) {
+      setLoadingLikedMeals(true);
+      getLikedMeals().then((res) => {
+        setUserLikedMeals(res);
+      });
+      setLoadingLikedMeals(false);
+    }
+  }, [webId]);
+
   return (
-    <SolidContext.Provider value={{ webId, userProfile, loadingProfile }}>
+    <SolidContext.Provider
+      value={{
+        webId,
+        userProfile,
+        loadingProfile,
+        userLikedMeals,
+        loadingLikedMeals,
+      }}
+    >
       <SolidUpdateContext.Provider value={{ setWebId }}>
         {children}
       </SolidUpdateContext.Provider>

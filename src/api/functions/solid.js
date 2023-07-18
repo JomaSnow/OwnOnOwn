@@ -1,14 +1,5 @@
 /* eslint eqeqeq: "off" */
 
-// [
-//   {
-//       "id": "dbuisa-1-njoi",
-//       "day_time": "segunda_10",
-//       "friend_pod_url": "https://jomasnow.solidcommunity.net/profile/card#me",
-//       "status": 4,
-//       "updated_at": 1689570780569
-//   }
-// ]
 import {
   getPodUrlAll,
   overwriteFile,
@@ -482,13 +473,6 @@ export async function deleteCompromisso(comp, compromissos) {
 }
 
 // Para compromissos do usuário não passa webId, para de algum amigo passa.
-// compromisso = {
-//   id,
-//   day_time,
-//   friend_pod_url,
-//   status, // 0- pendente, 1- confirmado, 2- cancelado por vc, 3- cancelado pelo amigo, 4- aguardando sua confirmação
-//   updated_at,
-// }
 export async function getCompromissos(webId, friendsArr) {
   let id = webId;
 
@@ -787,6 +771,37 @@ export async function updateAgenda({
   }
 }
 
+export async function getLikedMeals(webId) {
+  let id = webId;
+
+  if (!webId) {
+    id = getDefaultSession().info.webId;
+  }
+
+  const myPods = await getPodUrlAll(id);
+
+  const podUrl = myPods[0];
+
+  const targetFileURL = podUrl + "public/ruview/likedMeals.json";
+
+  try {
+    const likedMeals = await getFile(targetFileURL, { fetch: fetch });
+
+    const blob = await new Response(likedMeals).text();
+
+    const json = JSON.parse(blob);
+
+    return json;
+  } catch (e) {
+    if (e.message.includes("404")) {
+      return [];
+    }
+    console.error("Ocorreu um erro no getLikedMeals.");
+    console.error(e);
+    throw new Error(e);
+  }
+}
+
 /*Funções de amigos*/
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 export async function isValidFriendWebId(webId) {
@@ -827,9 +842,10 @@ export async function getSolidFriends() {
       const nome = getLiteral(friendThing, FOAF.name).value;
       const friendWebId = url;
       const agenda = await getAgenda(url);
+      const likedMeals = await getLikedMeals(url);
       const compromissos = await getCompromissos(url, null);
 
-      const friendObj = { nome, friendWebId, agenda, compromissos };
+      const friendObj = { nome, friendWebId, agenda, compromissos, likedMeals };
 
       friendsObjArr.push(friendObj);
     }

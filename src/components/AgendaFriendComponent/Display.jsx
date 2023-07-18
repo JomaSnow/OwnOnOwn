@@ -32,12 +32,12 @@ export default function Display({
       <ActionRow>
         <InfoSpan>Agenda de {nome}</InfoSpan>
         {showSuggestion &&
-          (hora_refeicao === 0 ? (
+          (hora_refeicao === "0" ? (
             <MealSpan>
               Vocês dois gostam do café do RU de hoje! Por que não reunir no
               campus hoje, às 06h-08h?
             </MealSpan>
-          ) : hora_refeicao === 1 ? (
+          ) : hora_refeicao === "1" ? (
             <MealSpan>
               Vocês dois gostam do almoço do RU de hoje! Por que não reunir no
               campus hoje, às 12h-14h?

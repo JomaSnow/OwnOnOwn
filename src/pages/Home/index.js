@@ -9,6 +9,11 @@ export default function HomePage() {
 
   const { friends } = usePodFriends();
 
+  // muda nome da página
+  useEffect(() => {
+    document.title = "Tutor | Home";
+  }, []);
+
   // popula array de opções
   useEffect(() => {
     const friendVec = [];
@@ -20,7 +25,12 @@ export default function HomePage() {
 
   // resgata objeto amigo baseado no amigo selecionado
   useEffect(() => {
-    setFriendObj({ nome: "Amigo", agenda: null });
+    setFriendObj({
+      nome: "Amigo",
+      agenda: null,
+      friendWebId: "url",
+      likedMeals: [],
+    });
 
     for (const friend of friends) {
       if (friend.friendWebId === selectedFriend) {
