@@ -37,13 +37,13 @@ export const TextLink = styled(Link)`
   align-self: center;
 `;
 
-export const FriendAgendaSection = styled.section`
+export const Section = styled.section`
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  margin: 6rem 3rem;
+  margin: 4rem 3rem 6rem;
 `;
 
 export const FriendSelectionArea = styled.div`

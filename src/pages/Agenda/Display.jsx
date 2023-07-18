@@ -1,5 +1,5 @@
 import React from "react";
-import { Main, PageTitle } from "./styles";
+import { Main, PageTitle, SpanText } from "./styles";
 import Navbar from "../../components/Navbar";
 import { colors } from "../../util/design";
 import { ClipLoader } from "react-spinners";
@@ -19,11 +19,11 @@ export default function Display() {
       <Main>
         <PageTitle>Agenda</PageTitle>
         {!webId ? (
-          <h2>Autorize acesso ao seu POD para criar uma agenda.</h2>
+          <SpanText>Autorize acesso ao seu POD para criar uma agenda.</SpanText>
         ) : loadingAgenda || loadingCompromissos ? (
           <ClipLoader color={colors.accent} />
         ) : errorAgenda ? (
-          <h2>{errorAgenda}</h2>
+          <SpanText>{errorAgenda}</SpanText>
         ) : (
           <AgendaComponent />
         )}
