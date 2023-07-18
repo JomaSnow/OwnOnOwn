@@ -537,15 +537,15 @@ export async function getCompromissos(webId, friendsArr) {
 
         // first match compromissos
         for (const fComp of friendsCompromissos) {
+          // case 1: friend requested compromisso (addCompromisso with status 4)
+          if (fComp.friend_pod_url === id && fComp.status === 0) {
+            const newComp = {
+              day_time: fComp.day_time,
+              friend_pod_url: friendWebId,
+            };
+            await addCompromisso(newComp, 4, jsonAfterFriendsCheck);
+          }
           for (const comp of jsonAfterDeletion) {
-            // case 1: friend requested compromisso (addCompromisso with status 4)
-            if (fComp.friend_pod_url === id && fComp.status === 0) {
-              const newComp = {
-                day_time: fComp.day_time,
-                friend_pod_url: friendWebId,
-              };
-              await addCompromisso(newComp, 4, jsonAfterFriendsCheck);
-            }
             // case 2: friend cancelled compromisso (updateCompromisso with status 3)
             if (
               fComp.friend_pod_url === id &&
