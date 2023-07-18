@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { useSolid } from "./SolidProvider";
 import {
   addCompromisso,
+  deleteCompromisso,
   getCompromissos,
   updateCompromisso,
 } from "../api/functions/solid";
@@ -99,6 +100,31 @@ export function PodCompromissosProvider({ children }) {
     setLoadingCompromissos(false);
   }
 
+  async function deleteAllCancelledCompromissosFromSameDayState(day_time) {
+    setLoadingCompromissos(true);
+
+    let auxComps = compromissos;
+
+    const compsOnSameDay = [];
+
+    for (const sameDayComp of compromissos) {
+      if (
+        sameDayComp.day_time === day_time &&
+        (sameDayComp.status === 2 || sameDayComp.status === 3)
+      ) {
+        compsOnSameDay.push(sameDayComp);
+      }
+    }
+
+    for (const sameDayComp of compsOnSameDay) {
+      auxComps = await deleteCompromisso(sameDayComp, auxComps);
+    }
+
+    setCompromissos(auxComps);
+
+    setLoadingCompromissos(false);
+  }
+
   async function addCompromissosState(day_time, friend_pod_url) {
     setLoadingCompromissos(true);
 
@@ -124,6 +150,7 @@ export function PodCompromissosProvider({ children }) {
           fetchCompromissos,
           updateCompromissosState,
           addCompromissosState,
+          deleteAllCancelledCompromissosFromSameDayState,
         }}
       >
         {children}
