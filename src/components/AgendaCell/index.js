@@ -2,9 +2,17 @@ import React, { useEffect, useState } from "react";
 import Display from "./Display";
 import { getModalTitleFromCellDayTime } from "../../util/modalTitle";
 import { usePodAgendaUpdate } from "../../hooks/PodAgendaProvider";
-import { usePodCompromissos } from "../../hooks/PodCompromissos";
+import {
+  usePodCompromissos,
+  usePodCompromissosUpdate,
+} from "../../hooks/PodCompromissos";
 
-export default function AgendaCell({ availability = 0, cell_day_time }) {
+export default function AgendaCell({
+  availability = 0,
+  cell_day_time,
+  isFriendCell = false,
+  friendWebId,
+}) {
   const [status, setStatus] = useState(availability);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [title, setTitle] = useState("");
@@ -14,6 +22,7 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
 
   const { setAgenda } = usePodAgendaUpdate();
   const { compromissos } = usePodCompromissos();
+  const { addCompromissosState } = usePodCompromissosUpdate();
 
   useEffect(() => {
     const comps = [];
@@ -38,21 +47,41 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
         break;
 
       case 1:
-        setParagraph(
-          "Este horário está atualmente definido como LIVRE e pode ser escolhido como horário para reunir."
-        );
-        setActionText("Mudar para INDISPONÍVEL");
+        if (isFriendCell) {
+          setParagraph(
+            "Este horário está disponível. Você pode enviar uma proposta para marcar uma reunião com este amigo."
+          );
+          setActionText("Solicitar reunião");
+        } else {
+          setParagraph(
+            "Este horário está atualmente definido como LIVRE e pode ser escolhido como horário para reunir."
+          );
+          setActionText("Mudar para INDISPONÍVEL");
+        }
         break;
 
       case 2:
-        setParagraph(
-          "Este horário está com uma ou mais reuniões pendentes de confirmação."
-        );
-        setActionText("OK");
+        if (isFriendCell) {
+          setParagraph(
+            "Este horário está disponível. Você pode enviar uma proposta para marcar uma reunião com este amigo."
+          );
+          setActionText("Solicitar reunião");
+        } else {
+          setParagraph(
+            "Este horário está com uma ou mais reuniões pendentes de confirmação."
+          );
+          setActionText("OK");
+        }
         break;
 
       case 3:
-        setParagraph("Este horário está com uma reunião confirmada.");
+        if (isFriendCell) {
+          setParagraph(
+            "Este horário está ocupado e não pode mais receber solicitações de reunião."
+          );
+        } else {
+          setParagraph("Este horário está com uma reunião confirmada.");
+        }
         setActionText("OK");
         break;
 
@@ -61,10 +90,12 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
         setActionText("");
         break;
     }
-  }, [availability, cell_day_time]);
+  }, [availability, cell_day_time, isFriendCell]);
 
   function openModal() {
-    setModalIsOpen(true);
+    if (!isFriendCell || availability !== 0) {
+      setModalIsOpen(true);
+    }
   }
 
   function closeModal() {
@@ -82,11 +113,35 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
         break;
 
       case 1:
-        setAgenda((agendaVelha) => {
-          let agendaNova = { ...agendaVelha };
-          agendaNova[cell_day_time] = 0;
-          return agendaNova;
-        });
+        if (isFriendCell) {
+          if (
+            window.confirm(
+              "Tem certeza que deseja enviar uma solicitação de reunião para este amigo nesta data?"
+            )
+          ) {
+            await addCompromissosState(cell_day_time, friendWebId);
+          }
+        } else {
+          setAgenda((agendaVelha) => {
+            let agendaNova = { ...agendaVelha };
+            agendaNova[cell_day_time] = 0;
+            return agendaNova;
+          });
+        }
+        break;
+
+      case 2:
+        if (isFriendCell) {
+          if (
+            window.confirm(
+              "Tem certeza que deseja enviar uma solicitação de reunião para este amigo nesta data?"
+            )
+          ) {
+            await addCompromissosState(cell_day_time, friendWebId);
+          }
+        } else {
+          console.log("OK");
+        }
         break;
 
       default:
@@ -107,6 +162,7 @@ export default function AgendaCell({ availability = 0, cell_day_time }) {
       modalAction={actionModal}
       actionText={actionText}
       compromissosCell={compromissosCell}
+      isFriendCell={isFriendCell}
     />
   );
 }

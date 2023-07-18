@@ -7,7 +7,15 @@ export const Cell = styled.button`
   width: 80%;
   height: 95%;
   background-color: ${(props) =>
-    props.$status === 3
+    props.$isFriendCell
+      ? props.$status === 3
+        ? colors.booked
+        : props.$status === 2
+        ? colors.available
+        : props.$status === 1
+        ? colors.available
+        : colors.unavailable
+      : props.$status === 3
       ? colors.booked
       : props.$status === 2
       ? colors.pending
@@ -17,16 +25,29 @@ export const Cell = styled.button`
 
   border: 5px solid
     ${(props) =>
-      props.$status === 3
+      props.$isFriendCell
+        ? props.$status === 3
+          ? colors.booked
+          : props.$status === 2
+          ? colors.available
+          : props.$status === 1
+          ? colors.available
+          : colors.unavailable
+        : props.$status === 3
         ? colors.booked
         : props.$status === 2
         ? colors.pending
         : props.$status === 1
         ? colors.available
         : colors.unavailable};
-  cursor: pointer;
+  cursor: ${(props) =>
+    props.$isFriendCell && props.$status === 0 ? "default" : "pointer"};
   &:hover {
-    border: 5px solid ${colors.accent};
+    border: 5px solid
+      ${(props) =>
+        props.$isFriendCell && props.$status === 0
+          ? colors.unavailable
+          : colors.accent};
   }
 `;
 

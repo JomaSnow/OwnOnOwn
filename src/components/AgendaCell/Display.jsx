@@ -23,11 +23,13 @@ export default function Display({
   modalAction = () => {},
   actionText,
   compromissosCell = [],
+  isFriendCell,
 }) {
   Modal.setAppElement("#root");
   return (
     <>
       <Cell
+        $isFriendCell={isFriendCell}
         $status={status}
         onClick={(e) => {
           e.preventDefault();
@@ -51,7 +53,8 @@ export default function Display({
               status !== 1 &&
               status !== 0 &&
               comp.status !== 2 &&
-              comp.status !== 3
+              comp.status !== 3 &&
+              !isFriendCell
             ) {
               return <Compromisso key={comp.id} compromisso={comp} />;
             }
